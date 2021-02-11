@@ -2,14 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tutto/api_constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:tutto/screens/login/components/raised_gradient_button.dart';
-import 'package:tutto/screens/login/components/tutto_gradient.dart';
 import 'package:tutto/screens/login/login_screen_code.dart';
 
 import 'components/body.dart';
+import 'components/login_input_field.dart';
 
 class LoginPhoneScreen extends StatefulWidget {
   @override
@@ -31,7 +29,6 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
         setState(() {
           isLoading = false;
         });
-        print(jsonResponse);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (BuildContext context) => LoginCodeScreen(
@@ -44,7 +41,6 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
       setState(() {
         isLoading = false;
       });
-      print(response.body);
     }
   }
 
@@ -55,12 +51,8 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
         child: Column(
           children: <Widget>[
-            TextFormField(
+            LoginInputField(
               controller: phoneController,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Введите свой номер';
@@ -70,22 +62,16 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
                 return null;
               },
               maxLength: 9,
-              maxLengthEnforced: true,
-              cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                prefix: Text('+998 '),
-                icon: Icon(Icons.phone, color: Colors.black),
-                hintText: "Номер телефона",
-                hintStyle: TextStyle(color: Colors.black),
-              ),
+              prefix: '+998 ',
+              hintText: 'Номер телефона',
+              readOnly: false,
             ),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 40.0,
               padding: EdgeInsets.symmetric(horizontal: 15.0),
               margin: EdgeInsets.only(top: 15.0),
-              child: RaisedGradientButton(
+              child: RaisedButton(
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     setState(() {
@@ -95,13 +81,13 @@ class _LoginPhoneScreenState extends State<LoginPhoneScreen> {
                   }
                 },
                 child: Text(
-                  "Отправить код с сообщением на этот номер",
+                  "Отправить код",
                   style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
-                gradient: buildLinearGradient(),
+                color: Colors.black,
               ),
             )
           ],

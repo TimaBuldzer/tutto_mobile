@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tutto/screens/home/home_screen.dart';
-import 'package:tutto/screens/login/login_screen_phone.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +22,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPhoneScreen(),
+      home: HomeScreen(),
     );
   }
 }

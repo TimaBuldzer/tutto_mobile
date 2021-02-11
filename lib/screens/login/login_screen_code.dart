@@ -1,15 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tutto/api_constants.dart';
 import 'package:tutto/screens/home/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:tutto/screens/login/components/raised_gradient_button.dart';
-import 'package:tutto/screens/login/components/tutto_gradient.dart';
 
 import 'components/body.dart';
+import 'components/login_input_field.dart';
 
 class LoginCodeScreen extends StatefulWidget {
   final String phone;
@@ -43,7 +41,6 @@ class _LoginCodeScreenState extends State<LoginCodeScreen> {
         setState(() {
           isLoading = false;
         });
-        print(jsonResponse);
         String token = 'Token ' + jsonResponse['token'];
         final storage = new FlutterSecureStorage();
         await storage.write(key: 'token', value: token);
@@ -67,27 +64,24 @@ class _LoginCodeScreenState extends State<LoginCodeScreen> {
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
         child: Column(
           children: <Widget>[
-            TextFormField(
-              readOnly: true,
+            LoginInputField(
               controller: phoneController,
-              cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                icon: Icon(Icons.phone, color: Colors.black),
-                prefix: Text('+'),
-                hintText: "Номер телефона",
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)),
-                hintStyle: TextStyle(color: Colors.black),
-              ),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Введите свой номер';
+                } else if (value.length < 9) {
+                  return 'Номер телефона должен состоять из 9 цифр';
+                }
+                return null;
+              },
+              maxLength: 12,
+              prefix: '+',
+              hintText: 'Номер телефона',
+              readOnly: true,
             ),
             SizedBox(height: 30),
-            TextFormField(
+            LoginInputField(
               controller: codeController,
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Введите код полученный из смс';
@@ -96,33 +90,27 @@ class _LoginCodeScreenState extends State<LoginCodeScreen> {
                 }
                 return null;
               },
-              cursorColor: Colors.black,
-              style: TextStyle(color: Colors.black),
               maxLength: 5,
-              maxLengthEnforced: true,
-              decoration: InputDecoration(
-                icon: Icon(Icons.perm_phone_msg, color: Colors.black),
-                hintText: 'Код из сообщения',
-                hintStyle: TextStyle(color: Colors.black),
-              ),
+              prefix: '',
+              hintText: 'Код из сообщения',
+              readOnly: false,
             ),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 40.0,
               padding: EdgeInsets.symmetric(horizontal: 15.0),
               margin: EdgeInsets.only(top: 15.0),
-              child: RaisedGradientButton(
+              child: RaisedButton(
                 onPressed: () {
-                  print(_formKey.currentState.validate());
                   if (_formKey.currentState.validate()) {
                     signIn(phoneController.text, codeController.text);
                   }
                 },
-                gradient: buildLinearGradient(),
+                color: Colors.black,
                 child: Text(
                   "Войти",
                   style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
